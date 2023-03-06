@@ -1,19 +1,27 @@
+#GLOVEDET
+#CAPN's main framework
 import colorsys
 import os
 import time
-
 import numpy as np
 import torch
 import torch.nn as nn
 from PIL import ImageDraw, ImageFont
-
 from nets.yolo import YoloBody
 from utils.utils import (cvtColor, get_classes, preprocess_input, resize_image,
                          show_config)
 from utils.utils_bbox import decode_outputs, non_max_suppression
 
 class CAPN(object):
-    _defaults = {
+    _defaults = {        #Parameter settings
+        # --------------------------------------------------------------------------#
+        #   Use your own model to predict the prediction. Be sure to modify the Model_path and CLASSSES_PATH!
+        #   Model_path points to the right value file under the LOGS folder, Classes_Path point to the txt under the Model_data
+        #
+        #   After the training, there are multiple rights files under the LOGS folder, and you can select the lower loss of the set.。
+        #   The low verification set loss does not mean that the MAP is high, only represents the good generalization performance on the verification set on the verification set.。
+        #   If the shape does not match, pay attention to the modification of the model_path and class_path parameters during training
+        # --------------------------------------------------------------------------#
         "model_path"        : 'logs/best_palm_qian/best_epoch_weights.pth',
         "classes_path"      : 'model_data/coco_classes.txt',
         "input_shape"       : [640, 640],
@@ -32,13 +40,13 @@ class CAPN(object):
             return cls._defaults[n]
         else:
             return "Unrecognized attribute name '" + n + "'"
-
+    #Initialization CAPN
     def __init__(self, **kwargs):
         self.__dict__.update(self._defaults)
         for name, value in kwargs.items():
             setattr(self, name, value)
             self._defaults[name] = value 
-
+        #The number of types and priority boxes
         self.class_names, self.num_classes  = get_classes(self.classes_path)
 
         hsv_tuples = [(x / self.num_classes, 1., 1.) for x in range(self.num_classes)]
@@ -71,7 +79,7 @@ class CAPN(object):
             images = torch.from_numpy(image_data)
             if self.cuda:
                 images = images.cuda()
-
+            #Predict the image input into the network!
             outputs = self.net(images)
             outputs = decode_outputs(outputs, self.input_shape)
 

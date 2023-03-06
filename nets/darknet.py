@@ -141,7 +141,7 @@ class cbam_block(nn.Module):
         x = x * self.channelattention(x)
         x = x * self.spatialattention(x)
         return x
-class CSPLayer_comba(nn.Module):
+class CAPLayer_comba(nn.Module):             #The CAP module introduces the combination of spatial attention mechanism and channel attention mechanism
     def __init__(self, in_channels, out_channels, n=1, shortcut=True, expansion=0.5, depthwise=False, act="silu",):
         super().__init__()
         hidden_channels = int(out_channels * expansion)

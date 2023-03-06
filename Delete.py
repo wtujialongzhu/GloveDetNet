@@ -1,6 +1,6 @@
 import os
-path = 'huancun'  # 文件路径
-if os.path.exists(path):  # 如果文件存在
+path = 'huancun'
+if os.path.exists(path):
     print("clear huancun")
     datanames = os.listdir(path)
     list = []
@@ -16,4 +16,4 @@ if os.path.exists(path):  # 如果文件存在
 
 
 else:
-    print('no such file:%s' % path)  # 则返回文件不存在
+    print('no such file:%s' % path)
